@@ -1,0 +1,33 @@
+name: tray_kit
+description: >-
+  A system tray icon with a menu for Flutter on Linux, Windows and macOS.
+  Linux needs no native libraries - it speaks StatusNotifierItem over D-Bus.
+version: 0.1.0
+homepage: https://github.com/Termphin/tray_kit
+repository: https://github.com/Termphin/tray_kit
+issue_tracker: https://github.com/Termphin/tray_kit/issues
+topics: [tray, system-tray, desktop, linux, dbus]
+
+environment:
+  sdk: ^3.10.0
+  flutter: ">=3.35.0"
+
+dependencies:
+  dbus: ^0.7.15
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      linux:
+        dartPluginClass: LinuxTrayKit
+      macos:
+        pluginClass: TrayKitPlugin
+      windows:
+        pluginClass: TrayKitPlugin
