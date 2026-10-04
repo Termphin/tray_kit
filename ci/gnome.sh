@@ -26,7 +26,7 @@ WAYLAND_DISPLAY=wayland-0 GDK_BACKEND=wayland "$app" >out/app-$mode.log 2>&1 &
 app_pid=$!
 
 if [ "$mode" = with-extension ]; then
-  dart run tool/tray_probe.dart | tee out/probe-gnome.log
+  dart run tool/tray_probe.dart 2>&1 | tee out/probe-gnome.log
   sleep 3
   gdbus call --session --dest org.gnome.Shell.Screenshot \
     --object-path /org/gnome/Shell/Screenshot \

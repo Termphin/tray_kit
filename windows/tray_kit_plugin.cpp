@@ -49,8 +49,8 @@ const T* Get(const EncodableMap& map, const char* key) {
 int64_t Id(const EncodableMap& map) {
   const EncodableValue* value = Find(map, "id");
   if (value == nullptr) return 0;
-  if (const auto* small = std::get_if<int32_t>(value)) return *small;
-  if (const auto* large = std::get_if<int64_t>(value)) return *large;
+  if (const auto* narrow = std::get_if<int32_t>(value)) return *narrow;
+  if (const auto* wide = std::get_if<int64_t>(value)) return *wide;
   return 0;
 }
 
