@@ -28,6 +28,17 @@ class LinuxTrayKit extends TrayKitPlatform {
   Uint8List? _iconBytes;
   Pixmap? _pixmap;
 
+  /// The last show or hide. Opening a session takes several round trips, and
+  /// a show that came in meanwhile would see no session and open a second
+  /// one - two icons - so each call waits for the one before.
+  Future<void> _last = Future.value();
+
+  Future<void> _serial(Future<void> Function() op) {
+    final next = _last.catchError((Object _) {}).then((_) => op());
+    _last = next;
+    return next;
+  }
+
   @override
   Future<bool> isSupported() async {
     final bus = _connect();
@@ -54,7 +65,7 @@ class LinuxTrayKit extends TrayKitPlatform {
     required String tooltip,
     required List<TrayMenuItem> menu,
     required VoidCallback? onActivate,
-  }) async {
+  }) => _serial(() async {
     final pixmap = await _pixmapFor(icon);
     final session = _session;
     if (session != null) {
@@ -69,14 +80,14 @@ class LinuxTrayKit extends TrayKitPlatform {
       rethrow;
     }
     _session = created;
-  }
+  });
 
   @override
-  Future<void> hide() async {
+  Future<void> hide() => _serial(() async {
     final session = _session;
     _session = null;
     await session?.close();
-  }
+  });
 }
 
 class _Session {

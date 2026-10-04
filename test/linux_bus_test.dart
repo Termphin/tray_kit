@@ -158,6 +158,40 @@ void main() {
     expect(await host.nameHasOwner(name), isFalse);
   });
 
+  test('shows that overlap put up one icon, not two', () async {
+    final watcher = await startWatcher();
+    final kit = tray();
+    final names = <String>[];
+    final sub = watcher.registered.stream.listen(names.add);
+
+    await Future.wait([
+      kit.show(
+        icon: TrayIcon.png(_png),
+        tooltip: 'a',
+        menu: const [],
+        onActivate: null,
+      ),
+      kit.show(
+        icon: TrayIcon.png(_png),
+        tooltip: 'b',
+        menu: const [],
+        onActivate: null,
+      ),
+      kit.show(
+        icon: TrayIcon.png(_png),
+        tooltip: 'c',
+        menu: const [],
+        onActivate: null,
+      ),
+    ]);
+    await pumpEventQueue();
+    await sub.cancel();
+
+    expect(names, hasLength(1));
+    await kit.hide();
+    expect(await host.nameHasOwner(names.single), isFalse);
+  });
+
   test('a stranger on the bus cannot crash the menu', () async {
     final watcher = await startWatcher();
     final kit = tray();
